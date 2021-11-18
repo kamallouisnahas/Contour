@@ -14,11 +14,11 @@ Pillow
 
 
 
-numpy
-tkinter
-tifffile
-matplotlib
-scipy
+numpy,
+tkinter,
+tifffile,
+matplotlib,
+scipy,
 psutil
 
 (try: python3 -m pip install numpy)
