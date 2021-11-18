@@ -35,11 +35,11 @@ psutil
 
 Read the information buttons ‘i’ when you encounter them in the program.
 
-Create a new workspace in Contour and import ‘easy_example.tif’ from the ‘example_data’ folder.
+Create a new workspace in Contour and import ‘easy_example.tif’.
 
 The voxel dimensions are 20 nm x 20 nm x 10 nm (width, height, depth)
 
-Try to segment the lipid droplets (black spheres) or the mitochondria (grey compartments). Use a minimum width of 5 pixels. You should be able to segment them reasonably well if you select an appropriate threshold range.
+Try to segment the lipid droplets (black spheres) or the mitochondria (grey compartments). Use a minimum width of 5-10 pixels. You should be able to segment them reasonably well if you select an appropriate threshold range.
 
 If parts of the lipid droplets or mitochondria are missing from the segmented volume, use local segmentation to fill in those parts. Use the erase options to remove false segments.
 
@@ -49,7 +49,7 @@ Differentiate the segmented elements and play around with the color scheme and f
 
 Do the easy example first.
 
-Create a new workspace in Contour and import ‘difficult_example.tif’ from the ‘example_data’ folder.
+Create a new workspace in Contour and import ‘difficult_example.tif’.
 
 The original voxel dimensions are 10 nm x 10 nm x 10 nm (width, height, depth)
 
@@ -65,7 +65,7 @@ Differentiate the segmented elements and inspect the volume measurements. These 
 
 You can import a segmented volume generated with a different segmentation tool. You can then differentiate and quantitate the elements.
 
-Do not create a new workspace. Instead, change the filename in the box and click Import segmented view. Import ‘imported_segmentation_example.tif’ from the ‘example_data’ folder. This image contains vesicles segmented using Segmentation Editor in Fiji.
+Do not create a new workspace. Instead, change the filename in the box and click Import segmented view. Import ‘imported_segmentation_example.tif’. This image contains vesicles segmented using Segmentation Editor in Fiji.
 
 The original voxel dimensions are 10 nm x 10 nm x 10 nm (width, height, depth)
 
