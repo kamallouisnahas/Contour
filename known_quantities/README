@@ -3,5 +3,5 @@ These stacks of binary masks have been generated to verify the quantitation func
 
 The known_volumes.tif file contains cuboids with known volumes (number of voxels) for 5 different cuboids (A-E). Information on voxel volume can be found in the known_volume.csv file. The volumes are given per slice and overall.
 
-The known_widths.tif file contains three elements (A-C) with known widths, where width refers to the longest modulus direction between any two voxels in the element. The longest modulus and the xyz coordinates of the two relevant voxels can be found in the known_widths.csv file.
+The known_widths.tif file contains three elements (A-C) with known widths, where width refers to the longest modulus direction between any two voxels in the element. The longest modulus and the XYZ coordinates of the two relevant voxels (a and b) can be found in the known_widths.csv file.
 
