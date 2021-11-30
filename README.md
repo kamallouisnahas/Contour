@@ -23,10 +23,9 @@ copy
 
 (try: python3 -m pip install numpy)
 
+You may need to download the copy.py file from https://github.com/python/cpython/blob/3.10/Lib/copy.py to use its functions.
+
 #####################################
-
-
-
 
 
 ###Trying out example data###
