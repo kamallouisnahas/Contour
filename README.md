@@ -13,13 +13,13 @@ Pillow
 (or try: python -m pip install Pillow)
 
 
-
 numpy,
 tkinter,
 tifffile,
 matplotlib,
 scipy,
-psutil
+psutil,
+copy
 
 (try: python3 -m pip install numpy)
 
