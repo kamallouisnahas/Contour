@@ -1,0 +1,4 @@
+*.pyc
+contour_files
+*.egg-info
+.vscode

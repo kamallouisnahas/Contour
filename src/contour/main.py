@@ -6,32 +6,22 @@ import shutil
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
-from tkinter import ttk
-from PIL import Image, ImageTk, ImageDraw
-import multiprocessing
+from PIL import Image, ImageTk
 import numpy as np
-import tifffile
 import time
-import threading
 import math
 import cProfile
 import io
 import pstats
-import operator
 import copy
 import pickle
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-from matplotlib.figure import Figure
 import csv
 import random
-import statistics
-from scipy.spatial import ConvexHull
 from scipy.ndimage import gaussian_filter
 import logging
 import psutil
 import gc
-
+from contour.info import __version__
 
 def profile(func):
     '''A decorator that uses cProfile to profile a function'''
@@ -63,7 +53,7 @@ def usage():
     available=psutil.virtual_memory().available * 100 / psutil.virtual_memory().total
     print('CPU:',cpu,'RAM:',ram,'AVAILABLE:',available)
 
-usage()
+# usage()
 
 
 
@@ -4578,9 +4568,11 @@ def open_workspace():
 
 
 #STATEMENTS#########################################################################################################################
+
+    
 if __name__ == "__main__":
     file_access_window=Tk()
-    file_access_window.title('Contour v1.0')
+    file_access_window.title('Contour v%s' % __version__)
     new_workspace_name=Entry(file_access_window,width=20)
     new_workspace_name.grid(row=1,column=0,padx=20,pady=5,sticky=N)
     new_workspace_name.insert(0,'autosave')
