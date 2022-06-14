@@ -69,12 +69,12 @@ Click Calculate width to quantitate the longest width of each element in 3D. The
 
 ###############################
 
-For more information, check out our mansucript:
+For more information, check out our publication:
 
-Nahas, Kamal L., João Ferreira Fernandes, Colin Crump, Stephen Graham, and Maria Harkiolaki. 
-Contour, a semi-automated segmentation and quantitation tool for cryo-soft-X-ray tomography. bioRxiv (2021).
+Nahas, K. L., Ferreira Fernandes, J., Vyas, N., Crump, C., Graham, S. and Harkiolaki, M. (2022)
+Contour: a semi-automated segmentation and quantitation tool for cryo-soft-X-ray tomography. _Biological Imaging_, **2**, E3. doi:10.1017/S2633903X22000046
 
-https://www.biorxiv.org/content/10.1101/2021.12.03.470962v1.full
+https://www.cambridge.org/core/journals/biological-imaging/article/contour-a-semiautomated-segmentation-and-quantitation-tool-for-cryosoftxray-tomography/35B858F60A8B28468F4A2248BA0C7247
 
 For queries and reporting bugs, email contourqueries@gmail.com
 
