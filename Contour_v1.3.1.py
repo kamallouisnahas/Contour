@@ -1,13 +1,14 @@
 #MODULES############################################################################################################################
 
 import os
+from pathlib import Path
 import sys
 import shutil
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageSequence
 import numpy as np
 import time
 import math
@@ -58,27 +59,24 @@ class Files(object):
     
     def change_and_check_directory(*foldernames,parent_directory=True):
         subdirectories=len(foldernames)
-        folder_level=0
         if parent_directory: #if start at the parent directory
             os.chdir(directory_name)
-        while folder_level<subdirectories:
+        for folder_level in range(subdirectories):
             if not os.path.isdir(foldernames[folder_level]):
                 errormessage='Error: folder has been moved or deleted. \n\nThe folder '+str(foldernames[folder_level])+' could not be located.'
                 messagebox.showwarning('Folder missing',errormessage)
             os.chdir(foldernames[folder_level])
-            folder_level+=1
     
     def change_and_overwrite_directory(*foldernames,parent_directory=True):
         subdirectories=len(foldernames)
-        folder_level=0
         if parent_directory: #if start at the parent directory
             os.chdir(directory_name)
-        while folder_level<subdirectories:
-            if os.path.isdir(foldernames[folder_level]):
-                shutil.rmtree((foldernames[folder_level]))
-            os.mkdir(foldernames[folder_level])
-            os.chdir(foldernames[folder_level])
-            folder_level+=1
+        for folder in foldernames:
+            folder = Path(folder)
+            if folder.is_dir():
+                shutil.rmtree(folder)
+            folder.mkdir()
+            os.chdir(folder)
 
 
 class Window(Frame): #Window class is used to display the source_image_stack
@@ -96,7 +94,8 @@ class Window(Frame): #Window class is used to display the source_image_stack
         self.filename=filename
         self.__version=1
         global load_image
-        load_image=Image.open(filename) #import the image
+        with Image.open(Path(filename)) as im: #import the image
+            load_image = np.asarray([np.asarray(i) for i in ImageSequence.Iterator(im)], np.uint8)
     
     def rescale_stack(self):
         if len(stack)>0:
@@ -192,19 +191,12 @@ The Z depth has not been scaled down. If you view your segmented volume in 3D (e
         global stack
         global source_image_width
         global source_image_height
+        global load_image
         stack=[]
 
-        positive_infinity=float('inf')
-        i=0
-        while i < positive_infinity:
-            try:
-                load_image.seek(i) #work through image planes in the 3d stack
-                next_array=np.array(load_image,dtype="uint8") #load as unsigned integers of 8 bit (0 - 255 without + or - signs)
-                array_object=PixelArray(next_array) #additional data stored in object form, such as version number
-                stack.append(array_object) #append each image plane to the stack [] list
-                i=i+1
-            except EOFError: #break when reach the end of the file
-                break
+        for arr in load_image:
+            array_object=PixelArray(arr.astype("uint8")) #additional data stored in object form, such as version number
+            stack.append(array_object) #append each image plane to the stack [] list
         
         array=stack[0].image_array #isolate the image_array attribute of the object created by PixelArray so that dimensions can be measured
         new_image=Image.fromarray(array)
@@ -345,18 +337,10 @@ class PreviewWindow(Window):
     def process_image(self):
         global preview_stack
         preview_stack=[]
-
-        positive_infinity=float('inf') #imported images are of unlimited stack size
-        i=0
-        while i < positive_infinity:
-            try:
-                load_image.seek(i) #work through image planes in the 3d stack
-                next_array=np.array(load_image,dtype="uint8") #load as unsigned integers of 8 bit (0 - 255 without + or - signs)
-                array_object=PixelArray(next_array) #additional data stored in object form, such as version number
-                stack.append(array_object) #append each image plane to the stack [] list
-                i=i+1
-            except EOFError: #break when reach the end of the file
-                break
+        
+        for arr in load_image:
+            array_object=PixelArray(arr.astype("uint8")) #additional data stored in object form, such as version number
+            stack.append(array_object) #append each image plane to the stack [] list
         
         middle_slice=len(stack)/2
         global current_z
@@ -837,7 +821,7 @@ class SegmentedView(Frame): #SegmentedView class is used to display the segmente
     def save_segmented_vol_segmented_stack(file_suffix=''):
             foldername='segmented_volume'+file_suffix
             Files.change_and_check_directory(workspace_filename)
-            Files.change_and_overwrite_directory(foldername,parent_directory=False)
+            Files.change_and_overwrite_directory(foldername, parent_directory=False)
             count=0
             for plane in SegmentedView.segmented_vol_segmented_stack:
                 image=Image.fromarray(plane.image_array)
@@ -898,7 +882,8 @@ class SegmentedView(Frame): #SegmentedView class is used to display the segmente
         plane=0
         while plane<file_count:
             string_z_pos=StringZ.int_to_3_dec_string(plane)
-            load_image=Image.open(str(string_z_pos)+'.tif') #import the image
+            with Image.open(Path(str(string_z_pos)+'.tif')) as im: #import the image
+                load_image = np.asarray([np.asarray(i) for i in ImageSequence.Iterator(im)], np.uint8)
             try: #convert it to an rgb image in the first instance
                 next_array=np.array(load_image,dtype='bool').reshape(source_image_width,source_image_height) #load as unsigned integers of 8 bit (0 - 255 without + or - signs)
                 rgb_list=[]
@@ -909,7 +894,7 @@ class SegmentedView(Frame): #SegmentedView class is used to display the segmente
                         rgb_list.append((0,0,0,0))
                 rgb_array=np.array(rgb_list,dtype=np.uint8).reshape(source_image_width,source_image_height,4)
                 array_object=PixelArray(rgb_array) #additional data stored in object form, such as version number
-            except: #already saved as an rgb image for future instances
+            except Exception: #already saved as an rgb image for future instances
                 next_array=np.array(load_image,dtype=np.uint8)
                 array_object=PixelArray(next_array)
             self.segmented_stack.append(array_object)
@@ -4049,8 +4034,8 @@ class Grouping(object):
                 log_window_progress_bar.create_z_progress(z,len(bool_stack))
 
             for z in range (0,len(grouped_stack)):
-                current_image=Image.open('filtered_grouping_of_'+str(z)+'.tif')
-                current_array=np.array(current_image,dtype='uint8')
+                with Image.open(Path('filtered_grouping_of_'+str(z)+'.tif')) as im:
+                    current_array = np.asarray([np.asarray(i) for i in ImageSequence.Iterator(im)], np.uint8)
                 grouped_stack[z].image_array=current_array
                 log_window_progress_bar.create_z_progress(z,len(grouped_stack))
 
@@ -4707,7 +4692,14 @@ If you created a segmented volume using another segmentation tool, you can impor
         current_time=time.localtime()
         time_barcode='_'+str(current_time.tm_year)+'_'+str(current_time.tm_mon)+'_'+str(current_time.tm_mday)+'_'+str(current_time.tm_hour)+str(current_time.tm_min)+str(current_time.tm_sec)
         Files.change_or_make_directory(workspace_filename,'log_files')
-        logging.basicConfig(filename='Log_'+str(workspace_filename)+time_barcode+'.log', format='%(asctime)s %(message)s', filemode='w')
+        log_file = Path('Log_'+str(workspace_filename)+time_barcode+'.log')
+        if log_file.exists():
+            timeout = time.time() + 20
+            i = 1
+            while log_file.exists() and time.time() < timeout:
+                log_file.with_suffix(f"_{i}.log")
+                i += 1
+        logging.basicConfig(filename=str(log_file), format='%(asctime)s %(message)s', filemode='w')
         logger=logging.getLogger() 
         logger.setLevel(logging.INFO)
         LogWindow.update_log(workspace_filename)
@@ -4785,9 +4777,10 @@ If you created a segmented volume using another segmentation tool, you can impor
                 segmented_vol_segmented_view.display_stack_button()
                 segmented_vol_segmented_view.display_layer_button()
                 segmented_vol_segmented_view.display_edit_buttons()
-            except:
+            except Exception:
                 pass
 
+try:
     if not imported_segmented_volume:
         current_time=time.localtime()
         time_barcode='_'+str(current_time.tm_year)+'_'+str(current_time.tm_mon)+'_'+str(current_time.tm_mday)+'_'+str(current_time.tm_hour)+str(current_time.tm_min)+str(current_time.tm_sec)
@@ -4816,3 +4809,6 @@ If you created a segmented volume using another segmentation tool, you can impor
     selection_window.mainloop()
     segmented_vol_segmented_view.mainloop()
     group_window.mainloop()
+    
+finally:
+    logging.shutdown()
