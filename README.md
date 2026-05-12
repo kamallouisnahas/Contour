@@ -1,9 +1,9 @@
 # Contour
-A semi-automated segmentation and quantitation tool for cyro-soft-X-ray tomography in Python 3.7
+A semi-automated segmentation and quantitation tool for cyro-soft-X-ray tomography in Python 3.7.9
 
 ############Installation############
 
-Ensure you have Python 3.7 or later installed on your computer before you run Contour.
+Ensure you have Python 3.7.9 installed on your computer or in a virtual environment before you run Contour. Later versions of Python are less compatible with Contour.
 
 Python library dependencies:
 
